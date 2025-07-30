@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🔐 AI Message Encryption/Decryption Tool</title>
+  <style>
+    :root {
+      --green: #28a745;
+      --lemon: #d4ed91;
+      --text-dark: #2c3e50;
+      --background-light: #f9f9f9;
+      --white: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--background-light);
+      margin: 0;
+      padding: 40px 20px;
+      color: var(--text-dark);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--green);
+      margin-bottom: 40px;
+      transition: color 0.3s;
+    }
+
+    h1:hover {
+      color: var(--lemon);
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--white);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 20px;
+      display: block;
+      color: #333;
+    }
+
+    textarea, input[type="number"], input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .button-grid button {
+      padding: 14px;
+      font-size: 1em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      color: white;
+    }
+
+    .button-grid button:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    .encrypt { background: var(--green); }
+    .decrypt { background: #3498db; }
+    .speak { background: #f39c12; }
+    .suggest { background: #9b59b6; }
+    .clear { background: #e74c3c; }
+    .download { background: #1abc9c; }
+
+    .output-box {
+      margin-top: 40px;
+      padding: 20px;
+      background: #f4f4f4;
+      border-left: 5px solid #2980b9;
+      border-radius: 6px;
+    }
+
+    .output-box h3 {
+      margin: 0 0 10px;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 20px;
+      background: var(--white);
+      text-align: center;
+      font-size: 0.9em;
+      border-top: 2px solid var(--green);
+    }
+
+    .footer-text {
+      color: var(--green);
+      font-weight: bold;
+    }
+
+    .footer-text span {
+      color: var(--green);
+    }
+
+    .footer-text a {
+      color: var(--green);
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .footer-text a:hover {
+      color: var(--lemon);
+    }
+
+    .footer-logo {
+      height: 40px;
+      vertical-align: middle;
+      margin-right: 8px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .footer-logo:hover {
+      transform: scale(1.2) rotate(5deg);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔐 AI Message Encryption/Decryption Tool</h1>
+  <div class="container">
+    <label>Enter or Speak a Message:</label>
+    <textarea id="message" rows="4" placeholder="Type or speak your message..."></textarea>
+
+    <label>Encryption Key (1–25):</label>
+    <input type="number" id="key" placeholder="e.g. 7" min="1" max="25" />
+
+    <div class="button-grid">
+      <button class="encrypt" onclick="encryptMessage()">🔒 Encrypt</button>
+      <button class="decrypt" onclick="decryptMessage()">🔓 Decrypt</button>
+      <button class="speak" onclick="speakInput()">🎤 Speak Message</button>
+      <button class="speak" onclick="speakKey()">🎤 Speak Key</button>
+      <button class="suggest" onclick="suggestKey()">🧠 AI Suggest Key</button>
+      <button class="clear" onclick="clearAll()">🧼 Clear All</button>
+    </div>
+
+    <label>Upload a .txt File (optional):</label>
+    <input type="file" id="fileUpload" accept=".txt" onchange="readFile(event)" />
+
+    <div class="output-box">
+      <h3>🔐 Output:</h3>
+      <div id="outputText">Encrypted or decrypted result will appear here...</div>
+    </div>
+
+    <label>Save As (Filename):</label>
+    <input type="text" id="filename" placeholder="e.g. encrypted_message" />
+    <button class="download" onclick="downloadOutput()">⬇️ Download Output</button>
+  </div>
+
+  <footer>
+    <p class="footer-text">
+      <a href="https://3mtt.nitda.gov.ng" target="_blank">
+        <img src="3mtt logo.png" alt="3MTT Logo" class="footer-logo">
+      </a>
+      Designed by 
+      <a href="https://www.linkedin.com/in/rhoda-ejikeme-3064b813a" target="_blank">Rhoda Ejikeme</a> 
+      | <span>Cohort 3</span> | Cybersecurity | Fellow ID: <span>FE/23/95633609</span>
+    </p>
+  </footer>
+
+  <script>
+    function encryptMessage() {
+      const message = document.getElementById('message').value;
+      const key = parseInt(document.getElementById('key').value);
+      let result = '';
+      for (let i = 0; i < message.length; i++) {
+        const char = message[i];
+        if (char.match(/[a-z]/i)) {
+          const code = message.charCodeAt(i);
+          const offset = code >= 65 && code <= 90 ? 65 : 97;
+          result += String.fromCharCode(((code - offset + key) % 26) + offset);
+        } else {
+          result += char;
+        }
+      }
+      document.getElementById('outputText').textContent = result;
+    }
+
+    function decryptMessage() {
+      const message = document.getElementById('message').value;
+      const key = parseInt(document.getElementById('key').value);
+      let result = '';
+      for (let i = 0; i < message.length; i++) {
+        const char = message[i];
+        if (char.match(/[a-z]/i)) {
+          const code = message.charCodeAt(i);
+          const offset = code >= 65 && code <= 90 ? 65 : 97;
+          result += String.fromCharCode(((code - offset - key + 26) % 26) + offset);
+        } else {
+          result += char;
+        }
+      }
+      document.getElementById('outputText').textContent = result;
+    }
+
+    function speakInput() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        document.getElementById('message').value = event.results[0][0].transcript;
+      };
+    }
+
+    function speakKey() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.onresult = function(event) {
+        const spoken = event.results[0][0].transcript.match(/\d+/);
+        if (spoken) document.getElementById("key").value = spoken[0];
+      };
+      recognition.start();
+    }
+    
+    function suggestKey() {
+      const key = Math.floor(Math.random() * 25) + 1;
+      document.getElementById('key').value = key;
+      alert("🧠 AI Suggestion:\nUse encryption key: " + key);
+    }
+
+    function clearAll() {
+      document.getElementById('message').value = '';
+      document.getElementById('key').value = '';
+      document.getElementById('outputText').textContent = 'Encrypted or decrypted result will appear here...';
+      document.getElementById('filename').value = '';
+    }
+
+    function readFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('message').value = e.target.result;
+      };
+      reader.readAsText(file);
+    }
+
+    function downloadOutput() {
+      const content = document.getElementById('outputText').textContent;
+      const filename = document.getElementById('filename').value || 'output';
+      const blob = new Blob([content], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename + '.txt';
+      a.click();
+    }
+  </script>
+</body>
+</html>
