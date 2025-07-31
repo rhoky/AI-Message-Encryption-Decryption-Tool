@@ -14,13 +14,11 @@ I developed an enhanced web-based solution that allows users to encrypt and decr
 
 🎤 Voice input for both message and key using speech-to-text
 
-📹 Demo Video
-[Insert Loom Video Link Here]
-
 🌐 Live Demo
 [Insert Live Demo Link Here]
 
 🛠️ Built With
+
 HTML
 
 CSS
